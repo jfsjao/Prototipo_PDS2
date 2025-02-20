@@ -14,8 +14,7 @@ def read_root():
 
 @app.post("/criar", status_code=status.HTTP_201_CREATED)
 def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
-    mensagem_criada = model.Model_Mensagem(**nova_mensagem.model_dump())
+    mensagem_criada = model.Model_Mensagem(titulo=nova_mensagem.titulo, conteudo=nova_mensagem.conteudo, publicada=nova_mensagem.publicada)
     db.add(mensagem_criada)
     db.commit()
-    db.refresh(mensagem_criada)
     return {"Mensagem": mensagem_criada}
