@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.params import Body
+import classes
 
 app = FastAPI()
 
@@ -8,6 +8,6 @@ def read_root():
     return {"Hello": "lala"}
 
 @app.post("/criar")
-def criar_valores(res: dict = Body(...)):
-    print(res)
-    return {"Mensagem": f"lala: {res['lala']} lele: {res['lele']}"}
+def criar_valores(nova_mensagem: classes.Mensagem):
+    print(nova_mensagem)
+    return {"Mensagem": f"Título: {nova_mensagem.titulo} Conteúdo: {nova_mensagem.conteudo} Publicada:{nova_mensagem.publicada}"}
