@@ -12,6 +12,10 @@ app = FastAPI()
 def read_root():
     return {"Hello": "lala"}
 
+@app.get("/quadrado/{num}")
+def square(num: int):
+    return num ** 2
+
 @app.post("/criar", status_code=status.HTTP_201_CREATED)
 def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
     mensagem_criada = model.Model_Mensagem(titulo=nova_mensagem.titulo, conteudo=nova_mensagem.conteudo, publicada=nova_mensagem.publicada)
