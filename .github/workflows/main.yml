@@ -12,11 +12,16 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin
-          POSTGRES_DB: nome_database
+          POSTGRES_DB: mydatabase
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d mydatabase"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Pulling git repo
@@ -33,11 +38,7 @@ jobs:
       - name: Instalar dependências
         run: pip install -r BackEnd/requirements.txt
 
-      - name: Esperando o PostgreSQL ficar pronto
-        run: sleep 15
-
       - name: Executar pytest
         env:
-          DATABASE_URL: postgresql://postgres:admin@localhost:5432/nome_database
+          DATABASE_URL: postgresql://admin:admin@127.0.0.1:5432/mydatabase
         run: pytest BackEnd/teste.py
-
