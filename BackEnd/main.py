@@ -10,12 +10,12 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "lala"}
+    return {"Hello": "lalalalalalalalala"}
 
 @app.post("/criar", status_code=status.HTTP_201_CREATED)
 def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
- mensagem_criada = model.Model_Mensagem(**nova_mensagem.model_dump())
- db.add(mensagem_criada)
- db.commit()
- db.refresh(mensagem_criada)
- return {"Mensagem": mensagem_criada}
+    mensagem_criada = model.Model_Mensagem(**nova_mensagem.model_dump())
+    db.add(mensagem_criada)
+    db.commit()
+    db.refresh(mensagem_criada)
+    return {"Mensagem": mensagem_criada}
