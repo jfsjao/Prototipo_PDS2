@@ -1,15 +1,42 @@
 name: Build and Deploy
 
-on: 
+on:
   - push
   - pull_request
 
 jobs:
   job1:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: nome_database
+        ports:
+          - 5432:5432
+
     steps:
       - name: Pulling git repo
         uses: actions/checkout@v2
-      
-      - name: Hello
-        run: echo "Hello"
+
+      - name: Instalando o Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12.2"
+
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Esperando o PostgreSQL ficar pronto
+        run: sleep 15
+
+      - name: Executar pytest
+        env:
+          DATABASE_URL: postgresql://postgres:admin@localhost:5432/nome_database
+        run: pytest teste.py
