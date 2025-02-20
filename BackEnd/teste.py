@@ -12,4 +12,4 @@ def teste_quadrado():
     num = 4
     response = client.get(f"/quadrado/{num}")
     assert response.status_code == 200
-    assert response.text == str(num ** 2)"""
+    assert response.text == str(num ** 2)
