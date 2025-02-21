@@ -10,10 +10,11 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "lala"}
+ return {"Hello": "lala"}
+
 @app.get("/quadrado/{num}")
 def square(num: int):
-    return {"resultado": num ** 2}  # Calcula o quadrado do número
+    return num ** 3
 
 @app.post("/criar", status_code=status.HTTP_201_CREATED)
 def criar_valores(nova_mensagem: classes.Mensagem, db: Session = Depends(get_db)):
