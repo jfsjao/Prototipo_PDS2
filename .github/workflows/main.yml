@@ -12,11 +12,16 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: nome_database
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: mydatabase
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d mydatabase"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Clonar repositório
@@ -47,7 +52,7 @@ jobs:
             sleep 3
           done
 
-      - name: Executar pytest
+       - name: Executar pytest
         env:
-          DATABASE_URL: postgresql://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/nome_database
+          DATABASE_URL: postgresql://postgres:admin@172.18.0.2:5432/mydatabase
         run: pytest BackEnd/teste.py
