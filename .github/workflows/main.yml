@@ -48,14 +48,11 @@ jobs:
       - name: Esperando o PostgreSQL ficar pronto
         run: sleep 30
 
-      - name: Debug DATABASE_URL
-        run: echo "DATABASE_URL=${DATABASE_URL}"
-        env:
-          DATABASE_URL: postgresql://postgres:admin@localhost:5432/mydatabase
+      - name: Redefinir DATABASE_URL no ambiente
+        run: echo "DATABASE_URL=postgresql://postgres:admin@localhost:5432/mydatabase" >> $GITHUB_ENV
+
+      - name: Debug DATABASE_URL dentro do Python
+        run: python -c "import os; print(f'DATABASE_URL no Python: {os.getenv('DATABASE_URL')}')"
 
       - name: Executar pytest
-        env:
-          DATABASE_URL: postgresql://postgres:admin@localhost:5432/mydatabase
-        run: |
-          echo "Rodando pytest com DATABASE_URL=${DATABASE_URL}"
-          pytest BackEnd/teste.py
+        run: pytest BackEnd/teste.py
