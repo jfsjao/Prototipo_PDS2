@@ -51,8 +51,13 @@ jobs:
       - name: Redefinir DATABASE_URL no ambiente
         run: echo "DATABASE_URL=postgresql://postgres:admin@localhost:5432/mydatabase" >> $GITHUB_ENV
 
-      - name: Debug DATABASE_URL dentro do Python
-        run: python -c "import os; print(f'DATABASE_URL no Python: {os.getenv(\"DATABASE_URL\")}')"
+      - name: Criar script Python para debug
+        run: |
+          echo "import os" > debug_env.py
+          echo "print(f'DATABASE_URL no Python: {os.getenv(\"DATABASE_URL\")}')" >> debug_env.py
+
+      - name: Executar script Python de debug
+        run: python debug_env.py
 
       - name: Executar pytest
         run: pytest BackEnd/teste.py
