@@ -52,7 +52,7 @@ jobs:
         run: echo "DATABASE_URL=postgresql://postgres:admin@localhost:5432/mydatabase" >> $GITHUB_ENV
 
       - name: Debug DATABASE_URL dentro do Python
-        run: python -c "import os; print(f'DATABASE_URL no Python: {os.getenv('DATABASE_URL')}')"
+        run: python -c "import os; print(f'DATABASE_URL no Python: {os.getenv(\"DATABASE_URL\")}')"
 
       - name: Executar pytest
         run: pytest BackEnd/teste.py
