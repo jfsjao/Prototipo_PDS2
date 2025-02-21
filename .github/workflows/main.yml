@@ -41,18 +41,21 @@ jobs:
       - name: Instalar psycopg2-binary
         run: pip install psycopg2-binary
 
+      - name: Configurar variável DATABASE_URL
+        run: echo "DATABASE_URL=postgresql://admin:admin@postgres:5432/mydatabase" >> $GITHUB_ENV
+
       - name: Esperando o PostgreSQL ficar pronto
         run: |
-          for i in {1..10}; do
-            if PGPASSWORD=admin pg_isready -h postgres -U admin -d mydatabase; then
-              echo "Banco de dados está pronto!"
+          echo "Verificando conexão com o banco de dados..."
+          for i in {1..20}; do
+            if PGPASSWORD=admin psql -h postgres -U admin -d mydatabase -c '\q' > /dev/null 2>&1; then
+              echo "✅ Banco de dados está pronto!"
               break
             fi
-            echo "Esperando o banco de dados iniciar..."
-            sleep 3
+            echo "⏳ Aguardando o banco de dados..."
+            sleep 5
           done
 
       - name: Executar pytest
-        env:
-          DATABASE_URL: postgresql://admin:$admin@localhost:5432/mydatabase
+        working-directory: BackEnd
         run: pytest teste.py
