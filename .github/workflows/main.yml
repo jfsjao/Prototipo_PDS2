@@ -30,7 +30,7 @@ jobs:
       - name: Instalar Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.12"
+          python-version: "3.12.2"
 
       - name: Atualizar pip
         run: python -m pip install --upgrade pip
@@ -44,7 +44,7 @@ jobs:
       - name: Esperando o PostgreSQL ficar pronto
         run: |
           for i in {1..10}; do
-            if pg_isready -h localhost -p 5432; then
+            if PGPASSWORD=admin pg_isready -h postgres -U admin -d mydatabase; then
               echo "Banco de dados está pronto!"
               break
             fi
@@ -52,7 +52,7 @@ jobs:
             sleep 3
           done
 
-       - name: Executar pytest
+      - name: Executar pytest
         env:
-          DATABASE_URL: postgresql://postgres:admin@172.18.0.2:5432/mydatabase
+          DATABASE_URL: postgresql://admin:admin@postgres:5432/mydatabase
         run: pytest BackEnd/teste.py
