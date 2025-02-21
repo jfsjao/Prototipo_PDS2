@@ -38,8 +38,7 @@ jobs:
       - name: Instalar dependências
         run: |
           pip install -r BackEnd/requirements.txt
-          pip uninstall -y psycopg2-binary
-          pip install psycopg2
+          pip install psycopg2-binary
 
       - name: Testando conexão com o PostgreSQL
         run: |
@@ -49,13 +48,20 @@ jobs:
       - name: Esperando o PostgreSQL ficar pronto
         run: sleep 30
 
-      - name: Redefinir DATABASE_URL no ambiente
-        run: echo "DATABASE_URL=postgresql://postgres:admin@localhost:5432/mydatabase" >> $GITHUB_ENV
+      - name: Definir variáveis de ambiente do banco
+        run: |
+          echo "DATABASE_USER=postgres" >> $GITHUB_ENV
+          echo "DATABASE_PASSWORD=admin" >> $GITHUB_ENV
+          echo "DATABASE_NAME=mydatabase" >> $GITHUB_ENV
+          echo "DATABASE_HOST=localhost" >> $GITHUB_ENV
 
       - name: Criar script Python para debug
         run: |
           echo "import os" > debug_env.py
-          echo "print(f'DATABASE_URL no Python: {os.getenv(\"DATABASE_URL\")}')" >> debug_env.py
+          echo "print(f'DATABASE_USER: {os.getenv(\"DATABASE_USER\")}')" >> debug_env.py
+          echo "print(f'DATABASE_PASSWORD: {os.getenv(\"DATABASE_PASSWORD\")}')" >> debug_env.py
+          echo "print(f'DATABASE_NAME: {os.getenv(\"DATABASE_NAME\")}')" >> debug_env.py
+          echo "print(f'DATABASE_HOST: {os.getenv(\"DATABASE_HOST\")}')" >> debug_env.py
 
       - name: Executar script Python de debug
         run: python debug_env.py
