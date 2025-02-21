@@ -54,5 +54,5 @@ jobs:
 
       - name: Executar pytest
         env:
-          DATABASE_URL: postgresql://admin:admin@postgres:5432/mydatabase
-        run: pytest BackEnd/teste.py
+          DATABASE_URL: postgresql://admin:$admin@localhost:5432/mydatabase
+        run: pytest teste.py
