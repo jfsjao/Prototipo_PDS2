@@ -10,50 +10,38 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:13
         env:
-          POSTGRES_USER: admin
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
           POSTGRES_DB: mydatabase
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U admin -d mydatabase"
+          --health-cmd "pg_isready -U postgres -d mydatabase"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     steps:
-      - name: Clonar repositório
+      - name: Pulling git repo
         uses: actions/checkout@v2
 
-      - name: Instalar Python
+      - name: Instalando o Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.12.4"
 
-      - name: Atualizar pip
+      - name: Update pip
         run: python -m pip install --upgrade pip
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
-
-      - name: Configurar DATABASE_URL corretamente
-        run: echo "DATABASE_URL=postgresql://admin:admin@postgres:5432/mydatabase" >> $GITHUB_ENV
+        run: pip install -r BackEnd/requirements.txt
 
       - name: Esperando o PostgreSQL ficar pronto
-        run: |
-          echo "⏳ Aguardando o banco de dados iniciar (espera inicial de 10s)..."
-          sleep 10
-          for i in {1..20}; do
-            echo "Tentativa $i: Verificando conexão com o banco..."
-            if PGPASSWORD=admin psql -h postgres -U admin -d mydatabase -c "SELECT 1" > /dev/null 2>&1; then
-              echo "✅ Banco de dados está pronto!"
-              break
-            fi
-            echo "⏳ Aguardando mais 5 segundos..."
-            sleep 5
-          done
+        run: sleep 15
 
       - name: Executar pytest
-        run: pytest teste.py
+        env:
+          DATABASE_URL: postgresql://postgres:admin@localhost:5432/mydatabase
+        run: pytest BackEnd/teste.py
