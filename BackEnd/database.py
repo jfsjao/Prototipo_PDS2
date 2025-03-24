@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String, TIMESTAMP, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import os
@@ -19,14 +19,23 @@ if not all([user, password, database, host]):
 # Montar URL do banco de dados
 SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@{host}:5432/{database}"
 
-print(f"✅ Conectando ao banco de dados: {SQLALCHEMY_DATABASE_URL}")
-
-# Criar engine de conexão com pool_pre_ping=True para evitar falhas
+# Criar engine de conexão
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 
 # Criar sessão do SQLAlchemy
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+# Definir modelo para os dados coletados pelo scraper
+class MenuNav(Base):
+    __tablename__ = 'menu_nav'
+    id = Column(Integer, primary_key=True, index=True)
+    menuNav = Column(String, index=True)
+    link = Column(String)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)
+
+# Criar a tabela no banco de dados
+Base.metadata.create_all(bind=engine)
 
 # Dependência para obter a sessão do banco
 def get_db():
