@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: admin
-          POSTGRES_DB: mydatabase
+          POSTGRES_USER: ${{ secrets.DATABASE_USER }}      # Usando GitHub Secret
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}  # Usando GitHub Secret
+          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}          # Usando GitHub Secret
         ports:
           - 5432:5432
         options: >-
@@ -50,10 +50,10 @@ jobs:
 
       - name: Definir variáveis de ambiente do banco
         run: |
-          echo "DATABASE_USER=postgres" >> $GITHUB_ENV
-          echo "DATABASE_PASSWORD=admin" >> $GITHUB_ENV
-          echo "DATABASE_NAME=mydatabase" >> $GITHUB_ENV
-          echo "DATABASE_HOST=localhost" >> $GITHUB_ENV
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> $GITHUB_ENV
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> $GITHUB_ENV
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> $GITHUB_ENV
 
       - name: Criar script Python para debug
         run: |
