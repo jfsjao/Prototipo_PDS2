@@ -66,6 +66,5 @@ jobs:
       - name: Executar script Python de debug
         run: python debug_env.py
 
-    
       - name: Executar pytest
         run: pytest BackEnd/teste.py
