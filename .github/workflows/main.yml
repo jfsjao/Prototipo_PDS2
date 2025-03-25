@@ -8,20 +8,26 @@ jobs:
   job1:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: ${{ secrets.DATABASE_USER }}      # Usando GitHub Secret
-          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}  # Usando GitHub Secret
-          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}          # Usando GitHub Secret
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d mydatabase"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      services:
+        postgres:
+          image: postgres:13
+          env:
+            POSTGRES_USER: ${{ secrets.DATABASE_USER }}
+            POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+            POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
+          networks:
+            - postgres-network
+          ports:
+            - 5432:5432
+          options: >-
+            --health-cmd "pg_isready -U postgres -d ${POSTGRES_DB}"
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+
+networks:
+  postgres-network:
+    driver: bridge
 
     steps:
       - name: Pulling git repo
