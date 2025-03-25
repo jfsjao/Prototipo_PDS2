@@ -32,6 +32,10 @@ model.Base.metadata.create_all(bind=engine)
 def read_root():
     return {"message": "API está rodando!"}
 
+@app.get("/quadrado/{num}")
+def square(num: int):
+    return {"resultado": num ** 2}
+    
 # Função de Web Scraping
 def scrape_ufu():
     url = "https://www.ufu.br"
